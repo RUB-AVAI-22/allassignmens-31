@@ -1,0 +1,20 @@
+## Autonomous Vehicles and Artificial Intelligence
+# Assignment 3 Remote Control of Turtlebot3
+Daniele Belmonte, Lars Alexander Paul Buck, Daniel Laurenz
+Karl-Heinz Gerdes, Christof Hermeth, Liang Zhao
+
+## 1. Introduction
+We have some good reason to move the robot around.
+
+## 2. Design Decisions
+We created a publisher note to send `Twist` type messages under the topic `cmd_vel`. 
+
+The built-in bringup code `robot.launch.py` creates a subscriber to the `cmd_vel` topic, which receives the `Twist` type messages.
+
+The messages contains 6 velocity values:
+- linear velocities in x, y, z directions
+- angular velocities in x, y, z directions
+
+Due to the physical layout of the robot, only `linear.x` and `angular.z` are used to control the motion of the robot.
+
+## 3. Results
