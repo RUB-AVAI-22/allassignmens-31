@@ -11,10 +11,16 @@ We created a publisher note to send `Twist` type messages under the topic `cmd_v
 
 The built-in bringup code `robot.launch.py` creates a subscriber to the `cmd_vel` topic, which receives the `Twist` type messages.
 
-The messages contains 6 velocity values:
-- linear velocities in x, y, z directions
-- angular velocities in x, y, z directions
+The `Twist` type messages contains 6 velocity values:
+- linear velocities in x, y, z directions: `linear.x, linear.y, linear.z`
+- angular velocities in x, y, z directions: `angular.x, angular.y, angular.z`
 
 Due to the physical layout of the robot, only `linear.x` and `angular.z` are used to control the motion of the robot.
 
 ## 3. Results
+The control works.
+
+The truninig radius is related to the current linear speed. 
+
+Stuttering behavior at low speed.
+
