@@ -17,7 +17,12 @@ The `Twist` type messages contains 6 velocity values:
 
 Due to the physical layout of the robot, only `linear.x` and `angular.z` are used to control the motion of the robot.
 
-## 3. Results
+## 3. Controls
+To develop an RC car feeling, the TurtleBot moves at a constant speed in the desired direction when the linear direction keys `w`, `x` are pressed once. This makes it possible to steer while driving, using the steering keys `a`, `d`. With the `spacebar` or `s`  key, the Turtlebot stops.
+
+We have also tried to implement a speed control, which allows to increase or slow down the speed, but this had some issues which we could not solve in time.
+
+## 4. Results
 The control works.
 
 The truninig radius is related to the current linear speed. 
