@@ -2,6 +2,7 @@ from setuptools import setup
 
 package_name = 'demo_package'
 
+
 setup(
     name=package_name,
     version='2022.11.0',
@@ -22,6 +23,9 @@ setup(
         'console_scripts': [
             'pub = demo_package.pub:main',
             'sub = demo_package.sub:main',
+            'User_Node = demo_package.User_Node:main',
+            'control_turtle = demo_package.control_turtle:main',
+
         ],
     },
 )

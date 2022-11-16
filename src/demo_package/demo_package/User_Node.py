@@ -22,7 +22,7 @@ class User(Node):
     mode = "normal"
 
     def __init__(self):
-        super().__init__('image_subscriber')
+        super().__init__('user')
 
         self.processed_image_subscriber = self.create_subscription(Image, 'processed_image', self.show_data, 10)
         self.cv_bridge = CvBridge()
@@ -39,7 +39,7 @@ class User(Node):
 
 rclpy.init()
 
-node = Node("talker")
+node = Node("user_input_publisher")
 
 mode_pub = node.create_publisher(String, "user_input", 1)
 freq_pub = node.create_publisher(Int8, "user_input_freq", 5)
@@ -103,7 +103,7 @@ panel = tk.Label(root, image=img)
 
 panel.pack()
 
-slider1 = tk.Scale(root, from_=1, to=15, tickinterval=.2, length=500, orient=tk.HORIZONTAL, )
+slider1 = tk.Scale(root, from_=1, to=15, tickinterval=1, length=500, orient=tk.HORIZONTAL, )
 slider1.set(1)
 slider1.pack()
 
@@ -119,7 +119,6 @@ button4.pack()
 
 
 def update_img():
-    print("...updating")
     img2 = ImageTk.PhotoImage(IMG.fromarray(image_subscriber.image_data))
     panel.configure(image=img2)
     panel.img = img2

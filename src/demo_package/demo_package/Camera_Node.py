@@ -6,8 +6,9 @@ from sensor_msgs.msg import Image  # Image is the message type
 from cv_bridge import CvBridge  # Package to convert between ROS and OpenCV Images
 import cv2  # OpenCV library
 
-#used https://automaticaddison.com/getting-started-with-opencv-in-ros-2-galactic-python/
-#and tweaked based on the task
+
+# used https://automaticaddison.com/getting-started-with-opencv-in-ros-2-galactic-python/
+# and tweaked based on the task
 
 class ImagePublisher(Node):
     def __init__(self):
@@ -18,7 +19,7 @@ class ImagePublisher(Node):
         super().__init__('image_publisher')
 
         # Create the publisher. This publisher will publish an Image
-        # to the video_frames topic. The queue size is 10 messages.
+        # to the video_frames topic. The queue size is 1 messages.
         self.publisher_ = self.create_publisher(Image, 'video_frames', 1)
 
         # We will publish a message every 0.1 seconds

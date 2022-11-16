@@ -25,7 +25,7 @@ class ImageSubscriber(Node):
 
         # Create the subscriber. This subscriber will receive an Image
         # from the video_frames topic. The queue size is 10 messages.
-        self.subscription = self.create_subscription(Image,'video_frames',self.listener_callback,10)
+        self.subscription = self.create_subscription(Image, 'video_frames', self.listener_callback, 10)
 
         # subscriber to user input node
         self.user_input_subscription = self.create_subscription(String, "user_input", self.print_test_msg, 1)
@@ -52,7 +52,7 @@ class ImageSubscriber(Node):
             self.get_logger().info("publishing grayscale image data")
 
         elif self.mode == "contour":
-            img = cv2.Canny(self.image_data,150,150)
+            img = cv2.Canny(self.image_data, 150, 150)
             data = self.br.cv2_to_imgmsg(img)
             self.processed_image_publisher.publish(data)
             self.get_logger().info("publishing contour image data")
@@ -95,6 +95,7 @@ class ImageSubscriber(Node):
         self.timer = self.create_timer(msg.data, self.process_and_publish)
 
         print(self.timer.timer_period_ns)
+
     def listener_callback(self, data):
         """
         Callback function.
