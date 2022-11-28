@@ -25,6 +25,8 @@ setup(
             'sub = demo_package.sub:main',
             'User_Node = demo_package.User_Node:main',
             'control_turtle = demo_package.control_turtle:main',
+            'Camera_Node = demo_package.Camera_Node:main',
+            'Ai_Node = demo_package.Ai_Node:main',
 
         ],
     },
