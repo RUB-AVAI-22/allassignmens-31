@@ -50,14 +50,17 @@ class Ai_Node(Node):
         self.image_data = self.br.imgmsg_to_cv2(data)
         #self.image_data = cv2.resize(self.image_data, (480, 480), interpolation=cv2.INTER_AREA)
         results = self.model(self.image_data)
+
+        #draw tensorflow lite bounding boxes
+        labels = ["blue","orange","yellow"]
+        results.render()
+        #assign category to a label
+
+
+
         data = results.pandas().xyxy[0]
 
-        for index, border in data.iterrows():
-            start = (int(border.xmin), int(border.ymin))
-            end = (int(border.xmax), int(border.ymax))
-            color = (255, 0, 0)
 
-            cv2.rectangle(self.image_data, start, end, color, 2)
 
         results.print()
         data = self.br.cv2_to_imgmsg(cv2.cvtColor(self.image_data, cv2.COLOR_BGR2RGB))

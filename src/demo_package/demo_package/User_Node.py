@@ -24,7 +24,7 @@ class User(Node):
     def __init__(self):
         super().__init__('user')
 
-        self.processed_image_subscriber = self.create_subscription(Image, 'processed_image', self.show_data, 10)
+        self.processed_image_subscriber = self.create_subscription(Image, 'processed_image', self.show_data, 1)
         self.cv_bridge = CvBridge()
         self.br = CvBridge()
 
