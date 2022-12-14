@@ -27,6 +27,7 @@ setup(
             'control_turtle = demo_package.control_turtle:main',
             'Camera_Node = demo_package.Camera_Node:main',
             'Ai_Node = demo_package.Ai_Node:main',
+            'TestLidar = demo_package.TestLidar:main',
 
         ],
     },
