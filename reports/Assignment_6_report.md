@@ -4,9 +4,9 @@ Daniele Belmonte, Lars Alexander Paul Buck, Daniel Laurenz
 Karl-Heinz Gerdes, Christof Hermeth, Liang Zhao
 
 ## 1. Introduction
-One important function of an autonomous robot is to localizing objects of interests in the environment. For the task of autonomously driving a Turtlebot, the objects of interests are paper cones of different colors.
+One important function of an autonomous robot is localizing objects of interests in the environment. For the task of autonomously driving a Turtlebot, the objects of interests are paper cones of different colors.
 
-The Turtlebot is equiped with a RGB mono camera, which is capable of recognizing the paper cones and classifying them based on color with our objective detection algorithum. However, the mono camera cannot provide depth information, therefore a direct measurement of the distance between the detected cone and the robot was not possible with only the camera input.
+The Turtlebot is equiped with a RGB mono camera, which is capable of recognizing the paper cones and classifying them based on color with our objective detection algorithm. However, the mono camera cannot provide depth information, therefore a direct measurement of the distance between the detected cone and the robot was not possible with only the camera input.
 
 A lidar sensor measures the distance directly, and the Turtlebot is equiped with a 360 degrees single line lidar. The main limitation of this sensor is the amount of information that it can provide. The lidar has very limited resoluation in the vertical direction, i.e. only a single point at each measurement location. Thus it can hardly provide sufficient information for the object detection task. Besides, the lidar cannot provide any color information, meaning it has no chance to distinguish cones of different colors.
 
@@ -69,3 +69,8 @@ The alignment can be checked visually when placing the robot in front of calibra
 We have found only small misalignment with the aforementioned overlay method. A small offset value was added to the horizontal position of lidar measurement points and satisfactory alignment was achieved.
 
 ## Distance to Cones
+
+To determine the distance to a detected cone, the xmin and xmax values are used, to make up a horizontal space, where the cone is in. This space is then filtered for the minimum lidar value (excluding 0) to determine the nearest point.
+
+As the angles are linearly spaced to the pixels each x value can be converted in an angle by calculating:  
+$angle = \frac{62}{640} * x$
