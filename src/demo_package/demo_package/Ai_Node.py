@@ -12,7 +12,7 @@ from cv_bridge import CvBridge  # Package to convert between ROS and OpenCV Imag
 import cv2  # OpenCV library
 import numpy as np
 import torch
-
+import matplotlib.pyplot as plt
 
 class Ai_Node(Node):
     """
@@ -45,7 +45,7 @@ class Ai_Node(Node):
         # Used to convert between ROS and OpenCV images
         self.br = CvBridge()
 
-        self.model = torch.hub.load("ultralytics/yolov5", 'custom', path = 'src/demo_package/resource/best-int8.tflite')
+        self.model = torch.hub.load("ultralytics/yolov5", 'custom', path = 'src/demo_package/resource/best.pt')
         
     def updateLidarData(self, laserMsg):
         self.lidar_range = np.array(laserMsg.ranges)
@@ -59,6 +59,7 @@ class Ai_Node(Node):
 
         # Convert ROS Image message to OpenCV image
         self.image_data = self.br.imgmsg_to_cv2(data)
+        self.image_data = cv2.cvtColor(self.image_data, cv2.COLOR_BGR2RGB)
         #self.image_data = cv2.resize(self.image_data, (480, 480), interpolation=cv2.INTER_AREA)
         results = self.model(self.image_data)
 
@@ -70,26 +71,34 @@ class Ai_Node(Node):
 
 
         data = results.pandas().xyxy[0]
-        y = self.lidar_range[180 - 31: 180 + 31]
+        y = np.flip(self.lidar_range[180 - 31: 180 + 31])
+        y[y == 0] = np.nan
         x = np.linspace(0, 640, y.shape[0])
         
         cones = []
-        for cone in data.iterrows():
-            index_min = y.shape[0] / 640 * cone.xmin
-            index_max = y.shape[0] / 640 * cone.xmax
+        for index, cone in data.iterrows():
+            index_min = y.shape[0] / 640 * cone["xmin"]
+            index_max = y.shape[0] / 640 * cone["xmax"]
             
             angle_min = index_min - y.shape[0]/2
             angle_max = index_max - y.shape[0]/2
             angle = angle_max - (angle_max-angle_min)/2
             
-            distance = y[int(index_min):int(index_max)].min()
+            distance = np.nanmin(y[int(index_min):int(index_max)])
             
-            color = cone.name
+            color = cone["name"]
             cones.append({"distance":distance, "color":color, "angle": angle})
 
+        fig, ax = plt.subplots()
+        ax.imshow(self.image_data)
+        ax.plot(x, y*130, 'o')
+        fig.canvas.draw()
+
+        img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+        img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
 
         print(cones)
-        data = self.br.cv2_to_imgmsg(cv2.cvtColor(self.image_data, cv2.COLOR_BGR2RGB))
+        data = self.br.cv2_to_imgmsg(img)
         self.processed_image_publisher.publish(data)
         self.get_logger().info("publishing image with bounding boxes")
 
