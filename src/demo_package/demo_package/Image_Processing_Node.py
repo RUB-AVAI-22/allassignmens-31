@@ -1,5 +1,6 @@
 # BY Lars Buck
 # 26.10.2022
+import matplotlib.pyplot as plt
 import rclpy  # Python library for ROS 2
 from rclpy.node import Node  # Handles the creation of nodes
 from sensor_msgs.msg import Image  # Image is the message type
@@ -7,13 +8,15 @@ from std_msgs.msg import String, Int8, Bool
 from cv_bridge import CvBridge  # Package to convert between ROS and OpenCV Images
 import cv2  # OpenCV library
 import numpy as np
-
+from sensor_msgs.msg import LaserScan
+from rclpy.qos import qos_profile_sensor_data
 
 class ImageSubscriber(Node):
     """
     Create an ImageSubscriber class, which is a subclass of the Node class.
     """
     image_data = np.ones(shape=[480, 640, 3], dtype=np.uint8)
+    lidar_range = np.zeros(360, dtype=np.float)
     mode = "normal"
 
     def __init__(self):
@@ -39,10 +42,34 @@ class ImageSubscriber(Node):
         # Used to convert between ROS and OpenCV images
         self.br = CvBridge()
 
+        self.laser_subscription = self.create_subscription(
+            LaserScan, # msg type
+            '/scan', # topic name
+            self.updateLidarData, # callback function
+            qos_profile_sensor_data, # qos profile
+        )
+
+    def updateLidarData(self, laserMsg):
+        self.lidar_range = np.array(laserMsg.ranges)
+
     def process_and_publish(self):
 
         if self.mode == "normal":
-            data = self.br.cv2_to_imgmsg(cv2.cvtColor(self.image_data, cv2.COLOR_BGR2RGB))
+
+            fig, ax = plt.subplots()
+            ax.imshow(self.image_data)
+            y = self.lidar_range[180 - 31: 180 + 31]
+            x = np.linspace(0, 640, y.shape[0])
+            ax.plot(x, y*130, 'o')
+            fig.canvas.draw()
+
+            img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+            img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+
+            # img is rgb, convert to opencv's default bgr
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+            data = self.br.cv2_to_imgmsg(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             self.processed_image_publisher.publish(data)
             self.get_logger().info("publishing normal image data")
 
